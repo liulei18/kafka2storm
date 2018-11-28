@@ -18,7 +18,7 @@ public class OrderMqSender {
         for (int messageNo = 1; messageNo < 10000; messageNo++) {
             producer.send(new KeyedMessage<String, String>(TOPIC, messageNo + "",new OrderInfo().random() ));
             try {
-                Thread.sleep(100);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
