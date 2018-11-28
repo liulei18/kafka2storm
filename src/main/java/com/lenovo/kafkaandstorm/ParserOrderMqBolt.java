@@ -18,8 +18,11 @@ import java.util.Map;
 
 public class ParserOrderMqBolt extends BaseRichBolt {
     private JedisPool pool;
+    private OutputCollector collector;
+
     @Override
-    public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
+    public void prepare(Map map, TopologyContext topologyContext, OutputCollector collector) {
+        this.collector = collector;
         //change "maxActive" -> "maxTotal" and "maxWait" -> "maxWaitMillis" in all examples
         JedisPoolConfig config = new JedisPoolConfig();
         //控制一个pool最多有多少个状态为idle(空闲的)的jedis实例。
@@ -56,6 +59,7 @@ public class ParserOrderMqBolt extends BaseRichBolt {
         //String bAmout =  jedis.get(bid+"Amout");
         jedis.incrBy(bid+"Amount",orderInfo.getProductPrice());
         jedis.close();
+		collector.ack(tuple);
     }
 
     private String getBubyProductId(String productId, String type) {
